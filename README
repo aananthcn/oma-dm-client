@@ -1,0 +1,94 @@
+INTRODUCTION
+============
+
+This file is a derivative of the test application developed by libdmclient by David Navarro on 14 Aug 2012.
+
+Here are the url links to that project:
+1) https://01.org/libdmclient
+2) http://github.com/01org/libdmclient
+
+
+LICENCE
+=======
+Original License: Apache 2.0
+
+
+COMPILING
+=========
+1. This work depends one following libraries, hence you need to ensure the following libraries are installed
+	a. libcurl
+	b. libsqlite3
+	c. libdmclient (refer the work by David Navarro)
+	d. libmd5rfc (refer the work by David Navarro)
+	e. libsyncml (refer the work by David Navarro)
+	f. libdl
+2. Clone this project
+3. CD to the root of the project
+4. Just type make
+5. This will create following objects
+	a. sota-oma-dm -- an executable
+	b. plugins -- a directory with many *_plugins.so files
+
+
+RUNNING
+=======
+./sota-oma-dm -p <path-to-plugin-files> -w
+
+
+SERVER SIDE SETUP
+=================
+Follow the instruction to setup DM Server as in https://01.org/libdmclient/documentation/installing-funambol-dm-server
+
+Then you may use the following script to start the server
+
+#######################################################################################################################
+#! /bin/bash
+
+export MY_HOME=$PWD
+export JAVA_HOME='/usr/lib/jvm/java-7-openjdk-amd64'
+export HSQL_HOME=$MY_HOME/hsqldb
+export JBOSS_HOME=$MY_HOME/jboss-3.2.8.SP1
+export J2EE_HOME=$JBOSS_HOME
+export FBOL_HOME=$MY_HOME/Funambol/dm-server
+
+if [ ! -d "$HSQL_HOME" ]; then
+	printf "Check the location of this script! \n\n"
+	printf "This script shall be placed on a directory where the directory \"hsqldb\" is located.\n\n"
+	exit
+fi
+
+if [ ! -d "$JBOSS_HOME" ]; then
+	printf "Check the location of this script! \n\n"
+	printf "This script shall be placed on a directory where the directory \"jboss-3.2.8.SP1\" is located.\n\n"
+	exit
+fi
+
+if [ ! -d "$FBOL_HOME" ]; then
+	printf "Check the location of this script! \n\n"
+	printf "This script shall be placed on a directory where the directory \"Funambol\" is located.\n\n"
+	exit
+fi
+
+# Start HSQL Database
+cd $HSQL_HOME/data
+if [ $DISPLAY = ":0" ]; then
+	xterm -e 'java -cp $HSQL_HOME/lib/hsqldb.jar org.hsqldb.Server' &
+else
+	java -cp $HSQL_HOME/lib/hsqldb.jar org.hsqldb.Server &
+fi
+
+
+# Start JBOSS server
+# cd $JBOSS_HOME/bin
+# ./run.sh &
+
+
+# Start Funambol server
+cd $FBOL_HOME
+
+if [ $DISPLAY = ":0" ]; then
+	xterm -e 'bin/start.sh' &
+else
+	bin/start.sh &
+fi
+#######################################################################################################################

@@ -1,0 +1,8 @@
+.vscode
+*.o
+cscope.out
+tags
+dm-client
+lib/
+plugins/
+*.swp
